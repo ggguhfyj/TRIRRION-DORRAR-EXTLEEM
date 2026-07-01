@@ -1,0 +1,125 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background-color: #000000;
+  font-family: Arial, sans-serif;
+  color: rgb(89, 255, 0);
+}
+
+a {
+  color: inherit;
+}
+
+.site-header {
+  background-color: #000000;
+}
+
+h1 {
+  margin: 28px 16px;
+  color: #ffffff;
+  text-align: center;
+  font-size: clamp(2rem, 6vw, 4rem);
+  line-height: 1.05;
+  letter-spacing: 0;
+}
+
+h1 span {
+  color: rgb(82, 255, 70);
+}
+
+.menu {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  background-color: #fbff00;
+  padding: 15px;
+  text-align: center;
+  flex-wrap: wrap;
+}
+
+.menu a {
+  color: rgb(214, 0, 0);
+  text-decoration: none;
+  font-weight: bold;
+}
+
+main {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.content-frame {
+  background-color: #fbff00;
+  padding: 24px 24px 0;
+}
+
+.hero {
+  background-color: #6095ff;
+  min-height: 53vh;
+  padding: 56px 20px 68px;
+  text-align: center;
+}
+
+.hero article {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.hero h2 {
+  margin: 0 0 12px;
+}
+
+.kicker {
+  color: rgb(82, 255, 70);
+  font-weight: bold;
+}
+
+.hero p {
+  color: rgb(214, 0, 0);
+  font-weight: bold;
+  line-height: 2.55;
+  font-size: 500px;
+}
+
+.article-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+  background-color: #164d00;
+  padding: 46px 28px 70px;
+  flex: 1;
+}
+.article-grid button {
+  grid-column: 1 / 4;
+  justify-self: center;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background-color: transparent;
+  padding: 0;
+  text-align: center;
+  min-height: 110px;
+}
+
+.card p {
+  color: rgb(89, 255, 0);
+  font-size: clamp(1rem, 1.4vw, 1.55rem);
+  line-height: 1.45;
+}
+
+@media (max-width: 760px) {
+  .content-frame {
+    padding: 12px 12px 0;
+  }
+
+  .article-grid {
+    grid-template-columns: 1fr;
+  }
+}

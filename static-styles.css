@@ -1,0 +1,68 @@
+body {
+background-color: #000000; /* A very light grey */
+font-family: Arial, sans-serif; /* Changes the default font */
+color: rgb(89, 255, 0); /* Dark grey text is easier to read than pure black */
+}
+h1 {
+color: #ffffff; /* A nice blue */
+text-align: center; /* Centers the text horizontally */
+}
+
+.menu {
+display: flex; /* Activates Flexbox */
+justify-content: center; /* Centers all items horizontally */
+gap: 30px; /* Adds space between the links */
+background-color: #fbff00;
+padding: 15px;
+text-align: center; /* Centers the text horizontally */
+}
+
+
+.menu a { /* Targets all <a> tags inside .menu */
+color: rgb(214, 0, 0); 
+text-decoration: none; /* Removes the default underline from links */
+font-weight: bold;
+text-align: center; /* Centers the text horizontally */
+}
+    
+.RANT {
+display: flex; /* Activates Flexbox */
+justify-content: center; /* Centers all items horizontally */
+gap: 30px; /* Adds space between the links */
+background-color: #164d00;
+padding: 15px;
+text-align: center; /* Centers the text horizontally */
+flex: 1;
+}
+
+article {
+  background-color: #6095ff;
+  padding: 15px;
+  text-align: center;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  flex: 2;
+}
+article p
+{
+
+    color: rgb(214, 0, 0); 
+    font-weight: bold;
+    margin-top: auto;
+    margin-bottom: 0;
+    padding-right: 200px;
+    padding-bottom: 30px;
+    padding-left: 200px;
+
+}
+
+.page {
+  border: 15px solid #fbff00;
+  min-height: 100vh;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+}
