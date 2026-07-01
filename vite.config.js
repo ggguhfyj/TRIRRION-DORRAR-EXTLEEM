@@ -7,7 +7,7 @@ const securityHeaders = {
 
 // https://vite.dev/config/
 export default defineConfig({
-  base: '/TRIRRION-DORRAR-EXTLEEM/',
+  base: './',
   plugins: [react()],
   server: {
     host: '0.0.0.0',
