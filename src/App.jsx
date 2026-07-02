@@ -2,7 +2,6 @@ import Header from './components/Header.jsx';
 import Hero from './components/Hero.jsx';
 import ArticleGrid from './components/ArticleGrid.jsx';
 import Footer from './components/Footer.jsx';
-import AnnoyingPopup from './components/AnnoyingPopup.jsx';
 
 function App() {
   return (
@@ -17,7 +16,6 @@ function App() {
         </div>
         <Footer />
       </div>
-      <AnnoyingPopup />
     </div>
   );
 }

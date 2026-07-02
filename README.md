@@ -6,8 +6,17 @@ This project started as plain `index.html` plus `styles.css`. It is now a Vite +
 
 Use the dev server instead of opening `index.html` directly.
 
+From PowerShell:
+
+```powershell
+cd "C:\Users\SamLowry\Documents\GitHub\TRIRRION DORRAR EXTLEEM"
+npm run dev
+```
+
+From WSL:
+
 ```bash
-cd "/mnt/c/Users/SamLowry/Desktop/project-paris/the actual thing"
+cd "/mnt/c/Users/SamLowry/Documents/GitHub/TRIRRION DORRAR EXTLEEM"
 npm run dev
 ```
 
@@ -26,11 +35,17 @@ Ctrl + Shift + R
 If it is still stale, restart the server:
 
 ```bash
-cd "/mnt/c/Users/SamLowry/Desktop/project-paris/the actual thing"
 npm run dev
 ```
 
 This project uses polling in `vite.config.js` because Windows-mounted folders under `/mnt/c/...` can miss file change events.
+
+If WSL says it cannot find `@rolldown/binding-linux-x64-gnu`, `node_modules` was probably installed from Windows and is missing Linux native optional dependencies. Run this once from WSL:
+
+```bash
+npm install
+npm run dev
+```
 
 ## Project Structure
 
