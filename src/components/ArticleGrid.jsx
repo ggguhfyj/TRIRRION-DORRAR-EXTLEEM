@@ -1,5 +1,6 @@
 import ArticleCard from './ArticleCard.jsx';
 import { useState } from 'react';
+
 const articles = [
   {
     section: 'politics',
@@ -34,7 +35,6 @@ function ArticleGrid() {
         YEW RIKE DIS? {count}
       </button>
     </section>
-    
   );
 }
 

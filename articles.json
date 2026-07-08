@@ -1,0 +1,23 @@
+[
+  {
+    "id": 1,
+    "title": "Campus Life Returns to Normal",
+    "excerpt": "Students are finally getting some rest after a packed week of summer school builds, demos, and late-night debugging.",
+    "author": "Jane Doe",
+    "likes": 16
+  },
+  {
+    "id": 2,
+    "title": "Epitech Summer School Ships Full-Stack APIs",
+    "excerpt": "Journalists can now publish stories through a live dashboard instead of sending drafts through Postman.",
+    "author": "Sam Lowry",
+    "likes": 11
+  },
+  {
+    "id": 3,
+    "title": "The Article Vault Opens",
+    "excerpt": "A lightweight JSON database keeps every headline, excerpt, author, and like count available after refresh.",
+    "author": "The Backend Desk",
+    "likes": 3
+  }
+]

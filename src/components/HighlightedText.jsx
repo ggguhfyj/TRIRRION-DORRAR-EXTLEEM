@@ -5,17 +5,23 @@ function getStableScore(word, index) {
   );
 }
 
-function HighlightedText({ text }) {
+function HighlightedText({ searchTerm = '', text }) {
+  const query = searchTerm.trim().toLowerCase();
+
   return text.split(/(\s+)/).map((part, index) => {
     const word = part.trim();
+    const isSearchMatch =
+      query.length > 0 && word.toLowerCase().includes(query);
     const shouldHighlight =
       word.length > 4 && getStableScore(word, index) % 7 === 0;
+    const className = isSearchMatch
+      ? 'search-highlight'
+      : shouldHighlight
+        ? 'yellow-highlight'
+        : undefined;
 
     return (
-      <span
-        className={shouldHighlight ? 'yellow-highlight' : undefined}
-        key={`${part}-${index}`}
-      >
+      <span className={className} key={`${part}-${index}`}>
         {part}
       </span>
     );

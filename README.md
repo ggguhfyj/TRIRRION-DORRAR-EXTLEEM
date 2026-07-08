@@ -1,519 +1,437 @@
-# React Project Cheatsheet
+# React And Backend Project
 
-This project started as plain `index.html` plus `styles.css`. It is now a Vite + React project, so most edits happen inside `src/`.
+This project keeps the original square neon React website design and adds a separate Node/Express backend API. The frontend is still mostly the same visual website, with one small extra feature: a search bar inside the hero section that highlights matching words in the hero text.
+
+## What Changed
+
+I added a backend server in `server.js`.
+
+That server uses Express to create API routes. An API route is a URL that sends or receives data instead of showing a webpage. For example:
+
+```text
+http://localhost:3000/api/articles
+```
+
+I added `articles.json` as a tiny file database.
+
+The backend reads and writes this file so article data can stay saved after refreshes. It is not a real production database, but it is perfect for learning backend basics.
+
+I added backend scripts to `package.json`.
+
+```json
+{
+  "api": "node server.js",
+  "server": "node server.js",
+  "start": "node server.js"
+}
+```
+
+These scripts let you start the API with:
+
+```powershell
+npm run api
+```
+
+I added a search bar to `src/components/Hero.jsx`.
+
+The search bar stores what you type in React state, counts how many hero words match it, and passes the search term into `HighlightedText.jsx`.
+
+I fixed the hero text formatting.
+
+The long hero text must be written as JavaScript strings. That means each line in the array needs quotes around it:
+
+```jsx
+const heroText = [
+  'First line of text.',
+  'Second line of text.',
+].join(' ');
+```
+
+Without the quotes, JavaScript tries to read the text as code and the app breaks.
+
+I made the hero paragraph text larger in `src/index.css`.
+
+The main rule is:
+
+```css
+.hero p {
+  font-size: clamp(1.15rem, 2.15vmin, 2.35rem);
+}
+```
+
+`clamp()` means the text has a minimum size, a flexible middle size, and a maximum size.
 
 ## Run The Project
 
-Use the dev server instead of opening `index.html` directly.
+You need two terminals.
 
-From PowerShell:
+In the first terminal, start the backend:
 
 ```powershell
-cd "C:\Users\SamLowry\Documents\GitHub\TRIRRION DORRAR EXTLEEM"
+npm run api
+```
+
+The API runs here:
+
+```text
+http://localhost:3000
+```
+
+In the second terminal, start the React website:
+
+```powershell
 npm run dev
 ```
 
-From WSL:
-
-```bash
-cd "/mnt/c/Users/SamLowry/Documents/GitHub/TRIRRION DORRAR EXTLEEM"
-npm run dev
-```
-
-Then open:
+Open the site here:
 
 ```text
 http://localhost:5173/
 ```
 
-If the browser does not update after edits:
+## Backend Files
 
-```bash
-Ctrl + Shift + R
+`server.js` is the backend server.
+
+It does these jobs:
+
+- Starts an Express app
+- Allows JSON request bodies with `express.json()`
+- Allows frontend requests with `cors()`
+- Reads article data from `articles.json`
+- Writes article data back to `articles.json`
+- Creates GET, POST, PATCH, and DELETE routes
+
+`articles.json` is the saved article data.
+
+Each article looks like this:
+
+```json
+{
+  "id": 1,
+  "title": "Campus Life Returns to Normal",
+  "excerpt": "Students are finally getting some rest...",
+  "author": "Jane Doe",
+  "likes": 5
+}
 ```
 
-If it is still stale, restart the server:
+`package.json` stores the commands and dependencies.
 
-```bash
-npm run dev
-```
-
-This project uses polling in `vite.config.js` because Windows-mounted folders under `/mnt/c/...` can miss file change events.
-
-If WSL says it cannot find `@rolldown/binding-linux-x64-gnu`, `node_modules` was probably installed from Windows and is missing Linux native optional dependencies. Run this once from WSL:
-
-```bash
-npm install
-npm run dev
-```
-
-## Project Structure
+The important backend dependencies are:
 
 ```text
-index.html
-src/
-  main.jsx
-  App.jsx
-  index.css
-  components/
-    Header.jsx
-    Hero.jsx
-    HighlightedText.jsx
-    ArticleGrid.jsx
-    ArticleCard.jsx
-    Footer.jsx
+express  Creates the server and routes
+cors     Lets the React dev server call the API
 ```
 
-What each file does:
+## API Endpoints
+
+The backend stores articles in `articles.json`.
 
 ```text
-main.jsx          Starts React and mounts App into #root.
-App.jsx           Assembles the page from components.
-index.css         Main styling for the React app.
-Header.jsx        Top title and Home/Politics/Campus nav.
-Hero.jsx          Main blue section with red paragraph text.
-HighlightedText.jsx  Procedurally highlights random-looking words.
-ArticleGrid.jsx   Stores the bottom article data and maps it into cards.
-ArticleCard.jsx   Reusable card component for each article.
-Footer.jsx        Footer component, currently returns null.
+GET    /api/articles       List every article
+GET    /api/articles/:id   Read one article by id
+POST   /api/articles       Publish a new article
+PATCH  /api/articles/:id   Update article fields or likes
+DELETE /api/articles/:id   Delete one article
 ```
 
-## React Basics Used Here
+Example `POST /api/articles` body:
 
-React components are JavaScript functions that return JSX:
-
-```jsx
-function Header() {
-  return <header>...</header>;
-}
-
-export default Header;
-```
-
-In JSX, use `className`, not `class`:
-
-```jsx
-<section className="hero">
-```
-
-Import a component before using it:
-
-```jsx
-import Header from './components/Header.jsx';
-
-function App() {
-  return <Header />;
+```json
+{
+  "title": "Epitech Summer School is a massive success",
+  "excerpt": "Students build full-stack APIs in record time.",
+  "author": "Jane Doe"
 }
 ```
 
-## Building The Page From Components
+The server automatically adds:
 
-The app is assembled in `App.jsx`:
-
-```jsx
-import Header from './components/Header.jsx';
-import Hero from './components/Hero.jsx';
-import ArticleGrid from './components/ArticleGrid.jsx';
-import Footer from './components/Footer.jsx';
-
-function App() {
-  return (
-    <div className="site-shell">
-      <Header />
-      <div className="content-frame">
-        <div className="content-body">
-          <main>
-            <Hero />
-            <ArticleGrid />
-          </main>
-        </div>
-        <Footer />
-      </div>
-    </div>
-  );
-}
-
-export default App;
-```
-
-## Making Reusable Article Cards
-
-The data lives in `ArticleGrid.jsx`:
-
-```jsx
-const articles = [
-  {
-    section: 'politics',
-    excerpt: 'Article text here.',
-  },
-  {
-    section: 'campus',
-    excerpt: 'More article text here.',
-  },
-  {
-    section: 'ray',
-    excerpt: 'Third article text here.',
-  },
-];
-```
-
-The grid loops over the data:
-
-```jsx
-{articles.map((article) => (
-  <ArticleCard
-    key={article.section}
-    section={article.section}
-    excerpt={article.excerpt}
-  />
-))}
-```
-
-The reusable card receives props:
-
-```jsx
-function ArticleCard({ excerpt, section }) {
-  return (
-    <article className="card" id={section} title="Read full article">
-      <p>{excerpt}</p>
-    </article>
-  );
+```json
+{
+  "id": 2,
+  "likes": 0
 }
 ```
 
-The `title="Read full article"` creates the browser tooltip on hover.
+## How The Backend Works
 
-## Three Narrow Columns
+The server starts with imports:
 
-The bottom articles become three columns with CSS Grid:
-
-```css
-.article-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 28px;
-}
+```js
+import cors from 'cors';
+import express from 'express';
+import { readFile, writeFile } from 'node:fs/promises';
 ```
 
-Mobile switches back to one column:
+`express` creates the API.
 
-```css
-@media (max-width: 760px) {
-  .article-grid {
-    grid-template-columns: 1fr;
-  }
-}
+`cors` lets the React site at port `5173` talk to the backend at port `3000`.
+
+`readFile` and `writeFile` let the server use `articles.json` like a simple database.
+
+The `readArticles()` function opens `articles.json` and converts the JSON text into a JavaScript array:
+
+```js
+const file = await readFile(articlesPath, 'utf8');
+const articles = JSON.parse(file);
 ```
 
-## Yellow Border Around Hero And Green Content
+The `writeArticles()` function converts the JavaScript array back into JSON text and saves it:
 
-The yellow frame comes from `.content-frame`. `Header` is outside this frame, so the yellow border does not wrap the `TRILLION DOLLAR EXTREME` title or nav.
-
-```css
-.content-frame {
-  width: 100%;
-  aspect-ratio: 1 / 1;
-  background-color: #fbff00;
-  padding: clamp(10px, 2.2vmin, 24px);
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-}
+```js
+await writeFile(articlesPath, `${JSON.stringify(articles, null, 2)}\n`);
 ```
 
-The important parts:
+The GET route sends all articles:
+
+```js
+app.get('/api/articles', async (request, response) => {
+  const articles = await readArticles();
+  response.status(200).json(articles);
+});
+```
+
+The POST route creates a new article:
+
+```js
+app.post('/api/articles', async (request, response) => {
+  const title = cleanText(request.body.title);
+  const excerpt = cleanText(request.body.excerpt);
+  const author = cleanText(request.body.author);
+});
+```
+
+It checks that the title, excerpt, and author exist. Then it creates an id, sets likes to `0`, saves the new article, and returns `201 Created`.
+
+The PATCH route updates an existing article.
+
+This is useful for changing the title, excerpt, author, or likes.
+
+The DELETE route removes an article.
+
+This is optional for the assignment, but it is included as a bonus endpoint.
+
+## How To Test The Backend
+
+Start the backend:
+
+```powershell
+npm run api
+```
+
+Open this URL in your browser:
 
 ```text
-aspect-ratio: 1 / 1;    Makes the frame a perfect square.
-width: 100%;            Uses the exact same width as the shell.
-padding: ...;           Creates the visible yellow border.
-overflow: hidden;       Keeps the inner layout inside the square.
+http://localhost:3000/api/articles
 ```
 
-The shared `--frame-size` variable below prevents the nav's yellow strip from being wider than the hero/green box.
+You should see JSON article data.
 
-`100svh` means full small viewport height. The custom property subtracts a header-sized chunk from the available height so the square can sit below the title/nav without overflowing.
+You can also test with PowerShell:
 
-## Centering A Square Website Layout
+```powershell
+Invoke-RestMethod -Uri "http://localhost:3000/api/articles" -Method Get
+```
 
-To keep the title/nav constrained but outside the yellow border, use a shell around both the header and square:
+To test POST in Postman:
+
+1. Set the method to `POST`
+2. Use this URL: `http://localhost:3000/api/articles`
+3. Go to Body
+4. Choose raw
+5. Choose JSON
+6. Send this:
+
+```json
+{
+  "title": "New Story",
+  "excerpt": "This was published through the API.",
+  "author": "Student Reporter"
+}
+```
+
+## Frontend Search Feature
+
+The search feature is in `src/components/Hero.jsx`.
+
+It uses React state:
+
+```jsx
+const [searchTerm, setSearchTerm] = useState('');
+```
+
+That means React remembers whatever the user types.
+
+The input updates that state:
+
+```jsx
+<input
+  onChange={(event) => setSearchTerm(event.target.value)}
+  value={searchTerm}
+/>
+```
+
+The match counter uses `useMemo()`:
+
+```jsx
+const matchCount = useMemo(
+  () => countMatches(heroText, searchTerm),
+  [searchTerm],
+);
+```
+
+`useMemo()` means React only recalculates the count when `searchTerm` changes.
+
+The hero text is passed into `HighlightedText`:
+
+```jsx
+<HighlightedText searchTerm={searchTerm} text={heroText} />
+```
+
+`HighlightedText.jsx` checks every word. If the word includes the search term, it uses the `search-highlight` CSS class.
+
+## How To Format Long Hero Text
+
+The safest way is to keep each paragraph as one quoted string:
+
+```jsx
+const heroText = [
+  'Paragraph one.',
+  'Paragraph two.',
+  '**********************************************',
+].join(' ');
+```
+
+Use commas after every line.
+
+If your text has an apostrophe inside a single-quoted string, escape it with a backslash:
+
+```jsx
+'This text has it\'s own apostrophe.'
+```
+
+You can also use double quotes outside the string if the line contains apostrophes:
+
+```jsx
+"This text has it's own apostrophe."
+```
+
+The `.join(' ')` at the end combines the array into one long string with spaces between each paragraph.
+
+## How To Make The Hero Text Bigger
+
+Open `src/index.css` and find:
 
 ```css
-#root {
-  --frame-size: min(
-    calc(100vw - clamp(16px, 4vmin, 40px)),
-    calc(100svh - clamp(16px, 4vmin, 40px) - clamp(86px, 13vmin, 160px))
-  );
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: clamp(8px, 2vmin, 20px);
-}
-
-.site-shell {
-  width: var(--frame-size);
-  max-height: calc(100svh - clamp(16px, 4vmin, 40px));
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  min-width: 0;
-  overflow: hidden;
-}
-
-.content-frame {
-  width: 100%;
-  aspect-ratio: 1 / 1;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-}
-
-.content-body {
-  display: flex;
-  flex: 1;
-  min-height: 0;
-  min-width: 0;
-  width: 100%;
-}
-
-main {
-  width: 100%;
-  height: 100%;
-  min-height: 0;
-  display: flex;
-  flex-direction: column;
+.hero p {
+  font-size: clamp(1.15rem, 2.15vmin, 2.35rem);
 }
 ```
 
-The header lives in `.site-shell`, but outside `.content-frame`. That keeps the title and nav aligned to the same centered width without giving them the yellow border.
-
-Use `min-width: 0`, `max-width: 100%`, and `overflow: hidden` on inner layout pieces when children try to stretch wider than their parent:
+To make it bigger, increase the numbers:
 
 ```css
-.site-header {
-  width: 100%;
-  min-width: 0;
-  overflow: hidden;
-}
-
-h1 {
-  max-width: 100%;
-  overflow-wrap: anywhere;
-}
-```
-
-Then avoid viewport-height rules inside the square. For example, this was not good for a square layout:
-
-```css
-.hero {
-  min-height: 53vh;
-}
-```
-
-That makes the hero depend on the browser height instead of the square. Use flex instead:
-
-```css
-.hero {
-  min-height: 0;
-  flex: 1 1 72%;
-}
-
-.article-grid {
-  min-height: 0;
-  flex: 1 1 28%;
-}
-```
-
-That means:
-
-```text
-Hero takes about 72% of the square height.
-Article grid takes about 28% of the square height.
-Both stay inside the yellow square.
-```
-
-If the text gets too large for the square, use:
-
-```css
-overflow: auto;
-```
-
-on the inner section that may need to scroll.
-
-## Anchoring Hero Text Near The Blue/Green Border
-
-Make the hero and its article use flexbox:
-
-```css
-.hero {
-  display: flex;
-  justify-content: center;
-}
-
-.hero article {
-  width: 100%;
-  max-width: 900px;
-  margin: 0 auto;
-  display: flex;
-  flex-direction: column;
-}
-```
-
-Push the last hero paragraph down:
-
-```css
-.hero p:last-child {
-  margin-top: auto;
-  margin-bottom: 0;
-}
-```
-
-## Making The Main Title Smaller
-
-The title size is controlled by the `h1` rule:
-
-```css
-h1 {
-  font-size: clamp(1.75rem, 4.8vw, 3.25rem);
-}
-```
-
-The three `clamp()` values mean:
-
-```text
-minimum size, responsive size, maximum size
+font-size: clamp(1.35rem, 2.5vmin, 2.75rem);
 ```
 
 To make it smaller, lower the numbers:
 
 ```css
-font-size: clamp(1.5rem, 4vw, 2.75rem);
+font-size: clamp(1rem, 1.8vmin, 2rem);
 ```
 
-## Making The Red Hero Text Bigger
+## How You Could Build This Yourself
 
-The red paragraph text is controlled by `.hero p`:
+1. Install backend packages:
 
-```css
-.hero p {
-  color: rgb(214, 0, 0);
-  font-size: clamp(1.2rem, 1.8vw, 1.9rem);
-  line-height: 1.55;
-  text-decoration: underline;
-}
+```powershell
+npm install express cors
 ```
 
-To make it bigger:
+2. Create `articles.json`.
 
-```css
-font-size: clamp(1.4rem, 2vw, 2.2rem);
+Add an array of article objects:
+
+```json
+[
+  {
+    "id": 1,
+    "title": "First Story",
+    "excerpt": "Short story text.",
+    "author": "Jane Doe",
+    "likes": 0
+  }
+]
 ```
 
-## Underlining Red Text
+3. Create `server.js`.
 
-Add this to the red text rule:
+Start with Express:
 
-```css
-text-decoration: underline;
+```js
+import cors from 'cors';
+import express from 'express';
+
+const app = express();
+const port = 3000;
+
+app.use(cors());
+app.use(express.json());
+
+app.listen(port, () => {
+  console.log(`API running at http://localhost:${port}`);
+});
 ```
 
-Example:
+4. Add functions to read and write `articles.json`.
 
-```css
-.hero p {
-  text-decoration: underline;
-}
-```
+Use `readFile`, `writeFile`, and `JSON.parse()`.
 
-## Procedural Yellow Highlights In Text
+5. Add routes.
 
-The hero paragraph is stored as a string in `Hero.jsx`:
+Start with `GET /api/articles`, then add `POST`, then `PATCH`, then `DELETE`.
 
-```jsx
-const heroText = [
-  'First sentence.',
-  'Second sentence.',
-].join(' ');
-```
+6. Add scripts to `package.json`.
 
-Then it is rendered with:
-
-```jsx
-<HighlightedText text={heroText} />
-```
-
-`HighlightedText.jsx` splits the text into words and wraps some words in:
-
-```jsx
-<span className="yellow-highlight">word</span>
-```
-
-The highlight choice is stable, not truly random, so the highlighted words do not jump around every render.
-
-CSS for highlights:
-
-```css
-.yellow-highlight {
-  background-color: #fbff00;
-  color: rgb(214, 0, 0);
-  padding: 0 0.12em;
-}
-```
-
-## Avoid Duplicate IDs
-
-IDs should be unique. For example, the hero already uses:
-
-```jsx
-<section className="hero" id="home">
-```
-
-So an article card should not also use `section: 'home'`. Use something unique:
-
-```jsx
+```json
 {
-  section: 'ray',
-  excerpt: '...',
+  "api": "node server.js"
 }
 ```
 
-## Common CSS Targets
+7. Test each route in the browser or Postman.
 
-```css
-body              Whole page.
-h1                Main TRILLION DOLLAR EXTREME title.
-.menu             Yellow nav bar.
-.content-frame    Yellow frame around the blue and green sections.
-.hero             Blue section.
-.hero h2          Hero heading.
-.hero p           Red hero paragraph.
-.yellow-highlight Yellow highlighted words inside red text.
-.article-grid     Green article area.
-.card             Each bottom text column.
-.card p           Bottom green-section text.
+8. Add the hero search.
+
+Use `useState()` for the search box, pass the search term to `HighlightedText`, and add a CSS class for matching words.
+
+## Useful Commands
+
+Build the React app:
+
+```powershell
+npm run build
 ```
 
-## Build And Check
+Lint the project:
 
-Use these when you want to verify the app is valid:
-
-```bash
-npm run build
+```powershell
 npm run lint
 ```
 
-Do not edit `dist/`. It is generated by `npm run build`.
+Start the backend:
 
-## Security Headers
-
-The Vite dev server and `vite preview` send:
-
-```text
-X-Content-Type-Options: nosniff
+```powershell
+npm run api
 ```
 
-The same header is also in `public/_headers`, which Vite copies into `dist/` for hosts that support `_headers` files, such as Cloudflare Pages or Netlify.
+Start the frontend:
 
-GitHub Pages does not support custom response headers from the repository or Actions artifact. If a production security scanner checks the GitHub Pages URL, this header may still be reported as missing unless the site is served through a host or proxy that can set custom headers.
+```powershell
+npm run dev
+```
+
+`dist/` is generated by `npm run build`; edit files in `src/` instead.
